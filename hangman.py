@@ -59,7 +59,14 @@ HANGMANPICS = ['''
  / \  |
       |
 =========''']
-words = 'ant baboon badger bat bear beaver camel cat clam cobra cougar coyote crow deer dog donkey duck eagle ferret fox frog goat goose hawk lion lizard llama mole monkey moose mouse mule newt otter owl panda parrot pigeon python rabbit ram rat raven rhino salmon seal shark sheep skunk sloth snake spider stork swan tiger toad trout turkey turtle weasel whale wolf wombat zebra'.split()
+
+file = open('C:/text.txt','r')
+score = open('D:/score.txt','r')
+maxScore = score.readlines()
+
+words = file.readlines()
+words = str(words).split()
+#words = 'ant baboon badger bat bear beaver camel cat clam cobra cougar coyote crow deer dog donkey duck eagle ferret fox frog goat goose hawk lion lizard llama mole monkey moose mouse mule newt otter owl panda parrot pigeon python rabbit ram rat raven rhino salmon seal shark sheep skunk sloth snake spider stork swan tiger toad trout turkey turtle weasel whale wolf wombat zebra'.split()
 
 def getRandomWord(wordList):
     # This function returns a random string from the passed list of strings.
@@ -123,13 +130,15 @@ def checkWrongAnswer(missedLetters, secretWord):
             
 def main():
     """Main application entry point."""
-    print('H A N G M A N')
+    print('H A N G M A N G A M E -edit Jung Chul')
     missedLetters = ''
     correctLetters = ''
     gameSucceeded = False
     gameFailed = False
     secretWord = getRandomWord(words)
-
+    scoreboard = []
+    index = 0
+    maxscore = int(maxScore[0])
     while True:
         displayBoard(HANGMANPICS, missedLetters, correctLetters, secretWord)
 
@@ -137,8 +146,17 @@ def main():
             if gameSucceeded:
                 print('Yes! The secret word is "' + secretWord + '"! You have won!')
             else:
-                print('You have run out of guesses!\nAfter ' + str(len(missedLetters)) + ' missed guesses and ' + str(len(correctLetters)) + ' correct guesses, the word was "' + secretWord + '"')
+               print('You have run out of guesses!\nAfter ' + str(len(missedLetters)) + ' missed guesses and ' + str(len(correctLetters)) + ' correct guesses, the word was "' + secretWord + '"')
+            scoreboard.append(100-5*len(missedLetters)+10*len(correctLetters))
+            print('Your score : '+str(scoreboard[index]))
+            index += 1
+            print('Current score : '+ str(scoreboard))
+            scoreboard.sort()
 
+            if(scoreboard[-1] > maxscore):
+                maxscore = scoreboard[-1]
+
+            print('Ranking score : '+ str(maxscore))
             # Ask the player if they want to play again (but only if the game is done).
             if playAgain():
                 missedLetters = ''
@@ -147,7 +165,11 @@ def main():
                 gameFailed = False
                 secretWord = getRandomWord(words)
                 continue 
-            else: 
+            else:
+                file = open('D:/score.txt','w')
+                file.write(str(maxscore))
+                file.close()
+                
                 break
 
         # Let the player type in a letter.
